@@ -124,5 +124,5 @@ class ProductoService:
         with ProductoUnitOfWork(self._session) as uow:
 
             producto = self._get_or_404(uow, producto_id)
-            producto.is_active = False
+            producto.activo = False
             uow.productos.add(producto)

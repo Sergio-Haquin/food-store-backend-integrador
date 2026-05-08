@@ -87,7 +87,7 @@ class CategoriaService:
         with CategoriaUnitOfWork(self._session) as uwo:
 
             categoria = self._get_or_404(uwo, categoria_id)
-            categoria.is_active = False
+            categoria.activo = False
             uwo.categorias.add(categoria)
 
     def get_tree(self) -> list[CategoriaTree]:
@@ -99,7 +99,7 @@ class CategoriaService:
         return self._build_tree(todas)
 
 
-    def _build_tree(categorias: list[Categoria]) -> list[CategoriaTree]:
+    def _build_tree(self, categorias: list[Categoria]) -> list[CategoriaTree]:
 
         nodos = {
             cat.id: CategoriaTree(

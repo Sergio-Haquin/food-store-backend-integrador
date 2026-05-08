@@ -77,5 +77,5 @@ class IngredienteService:
         with IngredienteUnitOfWork(self._session) as uow:
 
             ingrediente = self._get_or_404(uow, ingrediente_id)
-            ingrediente.is_active = False
+            ingrediente.activo = False
             uow.ingredientes.add(ingrediente)

@@ -35,6 +35,17 @@ def get_categorias(
     return svc.get_all(offset = offset, limit = limit)
 
 @router.get(
+    "/tree",
+    response_model = List[CategoriaTree],
+    summary = "Obtener el árbol de categorías"
+)
+def get_tree(
+    svc: CategoriaService = Depends(get_categoria_service)
+) -> List[CategoriaTree]:
+    
+    return svc.get_tree()
+
+@router.get(
     "/{categoria_id}",
     response_model = CategoriaPublic,
     summary = "Obtener una categoria por su ID"
@@ -45,17 +56,6 @@ def get_categoria(
 ) -> CategoriaPublic:
     
     return svc.get_by_id(categoria_id)
-
-@router.get(
-    "/tree",
-    response_model = List[CategoriaTree],
-    summary = "Obtener el árbol de categorías"
-)
-def get_tree(
-    svc: CategoriaService = Depends(get_categoria_service)
-) -> List[CategoriaTree]:
-    
-    return svc.get_tree()
 
 @router.patch(
     "/{categoria_id}",
