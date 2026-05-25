@@ -1,7 +1,5 @@
 from sqlmodel import Session
 from app.core.unit_of_work import UnitOfWork
-from app.modules.categorias.repository import CategoriaRepository
-from app.modules.ingredientes.repository import IngredienteRepository
 from app.modules.productos.repository import ProductoRepository
 
 class ProductoUnitOfWork(UnitOfWork):
@@ -10,5 +8,3 @@ class ProductoUnitOfWork(UnitOfWork):
 
         super().__init__(session)
         self.productos = ProductoRepository(session)
-        self.categorias = CategoriaRepository(session)
-        self.ingredientes = IngredienteRepository(session)

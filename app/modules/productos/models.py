@@ -1,65 +1,34 @@
-from typing import Optional, TYPE_CHECKING, List
-from sqlmodel import SQLModel, Field, Relationship
-from decimal import Decimal
-from sqlalchemy import Column, Integer, ForeignKey, Boolean, Numeric, Text
-from sqlalchemy.dialects.postgresql import ARRAY
+from sqlmodel import Field, Relationship, Column
+from sqlalchemy import ARRAY, String
 from app.core.base import Base
+from app.modules.productos.associations import ProductoCategoria, ProductoIngrediente
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from app.modules.categorias.models import Categoria
     from app.modules.ingredientes.models import Ingrediente
 
+class Producto(Base, table=True):
 
-class ProductoIngrediente(SQLModel, table = True):
+    __tablename__: str = "productos"
 
-    __tablename__ = "Producto_Ingrediente"
+    nombre: str
 
-    producto_id: int = Field(
-        sa_column = Column(Integer, ForeignKey("Producto.id", ondelete = "CASCADE"), primary_key = True)
-    )
+    descripcion: str | None = None
 
-    ingrediente_id: int = Field(
-        sa_column = Column(Integer, ForeignKey("Ingrediente.id", ondelete = "CASCADE"), primary_key = True)
-    )
+    precio_base: float = Field(default=0)
 
-    es_removible: bool = Field(nullable = False, default = False)
-
-
-class ProductoCategoria(SQLModel, table = True):
-
-    __tablename__ = "Producto_Categoria"
-
-    producto_id: int = Field(
-        sa_column = Column(Integer, ForeignKey("Producto.id", ondelete = "CASCADE"), primary_key = True)
-    )
-
-    categoria_id: int = Field(
-        sa_column = Column(Integer, ForeignKey("Categoria.id", ondelete = "CASCADE"), primary_key = True)
-    )
-
-    es_principal: bool = Field(
-        sa_column = Column(Boolean, default = False, nullable = False)
-    )
+    imagenes_url: list[str] | None = Field(default=None, sa_column=Column(ARRAY(String)))
     
-
-class Producto(Base, table = True):
-
-    __tablename__ = "Producto"
-
-    nombre: str = Field(min_length = 2, max_length = 150, nullable = False)
-
-    descripcion: Optional[str] = Field(default = None)
-
-    precio_base: Decimal = Field(
-        sa_column = Column(Numeric(10,2), nullable = False)
+    stock_cantidad: int = Field(default=0)
+    
+    disponible: bool = Field(default=True)
+    
+    unidad_venta_id: int | None = Field(default=None, foreign_key="unidad_medida.id")
+        
+    categorias: list["Categoria"] = Relationship(
+        back_populates="productos", link_model=ProductoCategoria
     )
-
-    imagenes_url: List[str] = Field(default_factory = list, sa_column = Column(ARRAY(Text), nullable = False))
-
-    stock_cantidad: int = Field(default = 0, ge = 0, nullable = False)
-
-    disponible: Optional[bool] = Field(default = True, nullable = False)
-
-    categorias: List["Categoria"] = Relationship(back_populates = "productos", link_model = ProductoCategoria)
-
-    ingredientes: List["Ingrediente"] = Relationship(back_populates = "productos", link_model = ProductoIngrediente)
+    ingredientes: list["Ingrediente"] = Relationship(
+        back_populates="productos", link_model=ProductoIngrediente
+    )

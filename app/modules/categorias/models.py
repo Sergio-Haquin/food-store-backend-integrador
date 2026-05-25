@@ -1,29 +1,35 @@
-from typing import Optional, List, TYPE_CHECKING
 from sqlmodel import Field, Relationship
-from sqlalchemy import Column, Integer, ForeignKey
 from app.core.base import Base
-from app.modules.productos.models import ProductoCategoria
+from app.modules.productos.associations import ProductoCategoria
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from app.modules.productos.models import Producto
 
 class Categoria(Base, table = True):
-    
-    __tablename__ = "Categoria"
+    __tablename__: str = "categorias"
 
-    nombre: str = Field(min_length=2, max_length=100, unique = True, nullable = False)
+    nombre: str = Field(unique = True)
 
-    descripcion: str = Field(nullable = False)
+    descripcion: str | None = None
 
-    imagen_url: Optional[str] = Field(nullable = True)
+    imagen_url: str | None = None
 
-    parent_id: Optional[int] = Field(
-        default = None,
-        sa_column = Column(
-            Integer,
-            ForeignKey("Categoria.id", ondelete="SET NULL"),
-            nullable = True
-        )
+    parent_id: int | None = Field(default = None, foreign_key = "categorias.id")
+
+    parent: "Categoria" = Relationship(
+        back_populates="hijos",
+        sa_relationship_kwargs={
+            "remote_side": "Categoria.id",
+            "lazy": "select",
+        },
     )
 
-    productos: List["Producto"] = Relationship(back_populates = "categorias", link_model = ProductoCategoria)
+    hijos: list["Categoria"] = Relationship(
+        back_populates="parent",
+        sa_relationship_kwargs={"lazy": "select"}
+    )
+
+    productos: list["Producto"] = Relationship(
+        back_populates="categorias", link_model=ProductoCategoria
+    )

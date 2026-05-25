@@ -1,32 +1,27 @@
-from typing import Optional, List
 from sqlmodel import SQLModel, Field
-
-class IngredienteList(SQLModel):
-    data: List["IngredientePublic"]
-    total: int
 
 class IngredienteCreate(SQLModel):
 
-    nombre: str = Field(min_length = 2, max_length = 100)
+    nombre: str = Field(max_length=100)
 
-    descripcion: Optional[str] = Field(default = None, max_length = 255)
+    descripcion: str | None = None
 
-    es_alergeno: bool = Field(default = False)
+    es_alergeno: bool = False
 
 class IngredienteUpdate(SQLModel):
 
-    nombre: Optional[str] = Field(default = None, min_length = 2, max_length = 100)
+    nombre: str | None = Field(default=None, max_length=100)
 
-    descripcion: Optional[str] = Field(default = None, max_length = 255)
+    descripcion: str | None = None
 
-    es_alergeno: Optional[bool] = None
+    es_alergeno: bool | None = None
 
-class IngredientePublic(SQLModel):
+class IngredienteOut(SQLModel):
 
     id: int
 
     nombre: str
 
-    descripcion: Optional[str]
-
+    descripcion: str | None
+    
     es_alergeno: bool

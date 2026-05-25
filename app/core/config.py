@@ -16,6 +16,10 @@ class Settings(BaseSettings):
             f"postgresql://{self.postgres_user}:{self.postgres_password}"
             f"@{self.postgres_host}:{self.postgres_port}/{self.postgres_db}"
         )
+
+    SECRET_KEY: str             
+    ALGORITHM:  str = "HS256"
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     
     model_config = {
         "env_file": ".env",

@@ -1,68 +1,46 @@
-from typing import Optional, List
 from sqlmodel import SQLModel, Field
-from decimal import Decimal
 
-class CategoriaInput(SQLModel):
-
+class CategoriaEnProducto(SQLModel):
     categoria_id: int
-
     es_principal: bool = False
 
-class IngredienteInput(SQLModel):
-
+class IngredienteEnProducto(SQLModel):
     ingrediente_id: int
-    
+    cantidad: float = 0
+    unidad_medida_id: int
     es_removible: bool = False
 
 class ProductoCreate(SQLModel):
-
-    nombre: str = Field(min_length=2, max_length=150)
-
-    descripcion: Optional[str] = None
-
-    precio_base: Decimal = Field(ge=0)
-
-    imagenes_url: List[str] = Field(default_factory=list)
-
+    nombre: str = Field(max_length=150)
+    descripcion: str | None = None
+    precio_base: float = Field(default=0, ge=0)
+    imagenes_url: list[str] | None = None
     stock_cantidad: int = Field(default=0, ge=0)
+    disponible: bool = True
+    unidad_venta_id: int | None = None
+    categorias: list[CategoriaEnProducto] = []
+    ingredientes: list[IngredienteEnProducto] = []
 
-    disponible: Optional[bool] = Field(default=True)
+class ProductoUpdate(SQLModel):
+    nombre: str | None = Field(default=None, max_length=150)
+    descripcion: str | None = None
+    precio_base: float | None = Field(default=None, ge=0)
+    imagenes_url: list[str] | None = None
+    stock_cantidad: int | None = Field(default=None, ge=0)
+    disponible: bool | None = None
+    unidad_venta_id: int | None = None
+    categorias: list[CategoriaEnProducto] | None = None
+    ingredientes: list[IngredienteEnProducto] | None = None
 
-    categorias: List[CategoriaInput] = Field(default_factory=list)
-
-    ingredientes: List[IngredienteInput] = Field(default_factory=list)
-
-class ProductoUpdate (SQLModel):
-
-    nombre: Optional[str] = Field(default = None, min_length = 2, max_length = 150)
-
-    descripcion: Optional[str] = Field(default = None, min_length = 2, max_length = 100)
-
-    precio_base: Optional[Decimal] = Field(default = None, ge = 0)
-
-    imagenes_url: Optional[List[str]] = Field(default = None)
-
-    stock_cantidad: Optional[int] = Field(default = None, ge = 0)
-
-    disponible: Optional[bool] = None
-
-class ProductoPublic(SQLModel):
+class ProductoOut(SQLModel):
     id: int
-
     nombre: str
+    descripcion: str | None = None
+    precio_base: float = 0
+    imagenes_url: list[str] | None = None
+    stock_cantidad: int = 0
+    disponible: bool = True
+    unidad_venta_id: int | None = None
 
-    descripcion: Optional[str]
-
-    precio_base: Decimal
-
-    imagenes_url: List[str]
-
-    stock_cantidad: int
-
-class ProductoList(SQLModel):
-
-    data: List[ProductoPublic]
-
-    total: int
-    
-
+class DisponibilidadRequest(SQLModel):
+    disponible: bool
