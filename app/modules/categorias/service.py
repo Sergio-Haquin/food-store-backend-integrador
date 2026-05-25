@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 from sqlmodel import Session, select
 from app.modules.categorias.models import Categoria
 from app.modules.categorias.schemas import CategoriaCreate, CategoriaUpdate, CategoriaOut, CategoriaWithHijos
-from app.modules.categorias.uow import CategoriaUnitOfWork
+from app.modules.categorias.unit_of_work import CategoriaUnitOfWork
 from app.modules.productos.associations import ProductoCategoria
 
 class CategoriaService:
