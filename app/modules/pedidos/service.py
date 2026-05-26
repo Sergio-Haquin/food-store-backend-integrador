@@ -11,9 +11,9 @@ from app.modules.forma_pago.models import FormaPago
 
 TRANSICIONES_VALIDAS = {
     "PENDIENTE":  ["CONFIRMADO", "CANCELADO"],
-    "CONFIRMADO": ["EN_PREP", "CANCELADO"],
-    "EN_PREP":    ["EN_CAMINO"],
-    "EN_CAMINO":  ["ENTREGADO"],
+    "CONFIRMADO": ["EN_PREP", "PENDIENTE", "CANCELADO"],     # ← +
+    "EN_PREP":    ["EN_CAMINO", "CONFIRMADO", "CANCELADO"],   # ← +
+    "EN_CAMINO":  ["ENTREGADO", "EN_PREP", "CANCELADO"],      # ← +
     "ENTREGADO":  [],
     "CANCELADO":  [],
 }
